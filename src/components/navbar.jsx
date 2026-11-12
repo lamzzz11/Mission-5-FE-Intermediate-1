@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import useIsMobile from '../hooks/useIsMobile.js'
 import userAvatar from '../assets/avatars/user.png'
 import logoutIcon from '../assets/icons/logout.svg'
 import menuIcon from '../assets/icons/menu.svg'
@@ -11,6 +12,7 @@ export default function Navbar({ showMenu = true }) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef(null)
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     if (!isOpen) return
@@ -47,35 +49,42 @@ export default function Navbar({ showMenu = true }) {
 
         {showMenu && (
           <nav className="navbar__menu" ref={menuRef}>
-            <a href="#kategori" className="navbar__link navbar__desktop-only">
-              Kategori
-            </a>
-            <button
-              type="button"
-              className="navbar__avatar navbar__desktop-only"
-              onClick={toggleMenu}
-              aria-expanded={isOpen}
-              aria-label="Menu akun"
-            >
-              <img src={userAvatar} alt="" />
-            </button>
-            <button
-              type="button"
-              className="navbar__burger navbar__mobile-only"
-              onClick={toggleMenu}
-              aria-expanded={isOpen}
-              aria-label="Buka menu"
-            >
-              <img src={menuIcon} alt="" />
-            </button>
+            {isMobile ? (
+              <button
+                type="button"
+                className="navbar__burger"
+                onClick={toggleMenu}
+                aria-expanded={isOpen}
+                aria-label="Buka menu"
+              >
+                <img src={menuIcon} alt="" />
+              </button>
+            ) : (
+              <>
+                <a href="#kategori" className="navbar__link">
+                  Kategori
+                </a>
+                <button
+                  type="button"
+                  className="navbar__avatar"
+                  onClick={toggleMenu}
+                  aria-expanded={isOpen}
+                  aria-label="Menu akun"
+                >
+                  <img src={userAvatar} alt="" />
+                </button>
+              </>
+            )}
 
             {isOpen && (
-              <ul className="navbar__dropdown">
-                <li className="navbar__mobile-only">
-                  <a href="#kategori" className="navbar__dropdown-item" onClick={closeMenu}>
-                    Kategori
-                  </a>
-                </li>
+              <ul className={`navbar__dropdown${isMobile ? ' navbar__dropdown--mobile' : ''}`}>
+                {isMobile && (
+                  <li>
+                    <a href="#kategori" className="navbar__dropdown-item" onClick={closeMenu}>
+                      Kategori
+                    </a>
+                  </li>
+                )}
                 {ACCOUNT_MENU.map((item) => (
                   <li key={item}>
                     <button type="button" className="navbar__dropdown-item" onClick={closeMenu}>

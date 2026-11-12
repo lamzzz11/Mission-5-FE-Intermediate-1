@@ -1,5 +1,6 @@
 import starEmptyIcon from '../assets/icons/star-empty.svg'
 import starFullIcon from '../assets/icons/star-full.svg'
+import useIsMobile from '../hooks/useIsMobile.js'
 
 const formatPrice = (price) => `Rp ${price / 1000}K`
 
@@ -25,6 +26,7 @@ function Rating({ value }) {
 
 export default function CourseCard({ course }) {
   const { title, description, image, instructor, rating, reviews, price } = course
+  const isMobile = useIsMobile()
 
   return (
     <article className="course-card">
@@ -32,7 +34,7 @@ export default function CourseCard({ course }) {
       <div className="course-card__body">
         <div className="course-card__text">
           <h3 className="course-card__title">{title}</h3>
-          <p className="course-card__desc">{description}</p>
+          {!isMobile && <p className="course-card__desc">{description}</p>}
         </div>
         <div className="course-card__instructor">
           <img className="course-card__avatar" src={instructor.avatar} alt={instructor.name} />
@@ -40,10 +42,12 @@ export default function CourseCard({ course }) {
             <p className="course-card__name">{instructor.name}</p>
             <p className="course-card__role">
               {instructor.role}
-              <span className="course-card__company">
-                {' '}
-                di <strong>{instructor.company}</strong>
-              </span>
+              {!isMobile && (
+                <>
+                  {' '}
+                  di <strong>{instructor.company}</strong>
+                </>
+              )}
             </p>
           </div>
         </div>

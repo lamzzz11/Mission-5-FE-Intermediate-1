@@ -5,6 +5,7 @@ import instagramIcon from '../assets/icons/instagram.svg'
 import linkedinIcon from '../assets/icons/linkedin.svg'
 import twitterIcon from '../assets/icons/twitter.svg'
 import logo from '../assets/logo.svg'
+import useIsMobile from '../hooks/useIsMobile.js'
 
 const FOOTER_SECTIONS = [
   {
@@ -30,6 +31,7 @@ const SOCIALS = [
 
 export default function Footer() {
   const [openSection, setOpenSection] = useState(null)
+  const isMobile = useIsMobile()
 
   const toggleSection = (title) => setOpenSection((prev) => (prev === title ? null : title))
 
@@ -49,24 +51,31 @@ export default function Footer() {
           <div className="footer__links">
             {FOOTER_SECTIONS.map(({ title, links }) => {
               const isOpen = openSection === title
+              const showLinks = !isMobile || isOpen
               return (
                 <div key={title} className={`footer__column${isOpen ? ' footer__column--open' : ''}`}>
-                  <button
-                    type="button"
-                    className="footer__heading"
-                    onClick={() => toggleSection(title)}
-                    aria-expanded={isOpen}
-                  >
-                    {title}
-                    <img className="footer__chevron" src={arrowRightIcon} alt="" />
-                  </button>
-                  <ul className="footer__list">
-                    {links.map((link) => (
-                      <li key={link}>
-                        <a href="#">{link}</a>
-                      </li>
-                    ))}
-                  </ul>
+                  {isMobile ? (
+                    <button
+                      type="button"
+                      className="footer__heading"
+                      onClick={() => toggleSection(title)}
+                      aria-expanded={isOpen}
+                    >
+                      {title}
+                      <img className="footer__chevron" src={arrowRightIcon} alt="" />
+                    </button>
+                  ) : (
+                    <h3 className="footer__heading">{title}</h3>
+                  )}
+                  {showLinks && (
+                    <ul className="footer__list">
+                      {links.map((link) => (
+                        <li key={link}>
+                          <a href="#">{link}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               )
             })}
