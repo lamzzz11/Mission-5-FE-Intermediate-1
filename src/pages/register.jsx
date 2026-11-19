@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useIsMobile from '../hooks/useIsMobile.js'
 import AuthActions from '../components/auth/authActions.jsx'
 import AuthCard from '../components/auth/authCard.jsx'
-import InputField, { PhoneField } from '../components/inputField.jsx'
+import InputField, { PhoneField, SelectField } from '../components/inputField.jsx'
 
 const INITIAL_FORM = {
   name: '',
   email: '',
+  gender: 'Wanita',
   countryCode: '+62',
   phone: '',
   password: '',
@@ -17,6 +19,7 @@ export default function Register() {
   const navigate = useNavigate()
   const [form, setForm] = useState(INITIAL_FORM)
   const [error, setError] = useState('')
+  const isMobile = useIsMobile()
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -46,6 +49,16 @@ export default function Register() {
           onChange={handleChange}
           required
         />
+        {isMobile && (
+          <SelectField
+            label="Jenis Kelamin"
+            name="gender"
+            value={form.gender}
+            onChange={handleChange}
+            options={['Wanita', 'Pria']}
+            required
+          />
+        )}
         <PhoneField
           label="No. Hp"
           name="phone"

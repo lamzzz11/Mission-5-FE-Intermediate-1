@@ -72,3 +72,29 @@ export function PhoneField({ label, required = false, countryCode, onCountryCode
     </div>
   )
 }
+
+export function SelectField({ label, name, value, onChange, options, required = false }) {
+  const inputId = useId()
+
+  return (
+    <div className="field">
+      <FieldLabel htmlFor={inputId} label={label} required={required} />
+      <div className="field__control">
+        <select
+          id={inputId}
+          className="field__select"
+          name={name}
+          value={value}
+          onChange={onChange}
+          required={required}
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  )
+}

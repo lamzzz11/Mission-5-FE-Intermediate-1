@@ -842,7 +842,8 @@ ul {
   height: 24px;
 }
 
-.phone__select {
+.phone__select,
+.field__select {
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -1137,7 +1138,8 @@ ul {
   .auth__forgot,
   .field__label,
   .field__input,
-  .phone__select {
+  .phone__select,
+  .field__select {
     font-size: 14px;
   }
 
@@ -1163,7 +1165,8 @@ ul {
     flex-basis: 122px;
   }
 
-  .phone__select {
+  .phone__select,
+  .field__select {
     padding-right: 34px;
     background-position: right 4px center;
   }
