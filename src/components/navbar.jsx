@@ -55,7 +55,7 @@ export default function Navbar({ showMenu = true }) {
                 className="navbar__burger"
                 onClick={toggleMenu}
                 aria-expanded={isOpen}
-                aria-label="Buka menu"
+                aria-label={isOpen ? 'Tutup menu' : 'Buka menu'}
               >
                 <img src={menuIcon} alt="" />
               </button>
