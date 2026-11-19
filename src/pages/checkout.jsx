@@ -3,6 +3,17 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import logo from '../assets/logo.svg'
 import { courses } from '../data/courses.jsx'
 import { saveOrder } from '../data/orders.js'
+import bcaLogo from '../assets/images/payment-brands/bca.svg'
+import bniLogo from '../assets/images/payment-brands/bni.svg'
+import briLogo from '../assets/images/payment-brands/bri.svg'
+import mandiriLogo from '../assets/images/payment-brands/mandiri.svg'
+import danaLogo from '../assets/images/payment-brands/dana.svg'
+import ovoLogo from '../assets/images/payment-brands/ovo.svg'
+import linkajaLogo from '../assets/images/payment-brands/linkaja.svg'
+import shopeePayLogo from '../assets/images/payment-brands/shopee-pay.svg'
+import mastercardLogo from '../assets/images/payment-brands/mastercard.svg'
+import visaLogo from '../assets/images/payment-brands/visa.svg'
+import jcbLogo from '../assets/images/payment-brands/jcb.svg'
 
 const SUBTOTAL = 767500
 const ADMIN_FEE = 7000
@@ -11,7 +22,20 @@ const PRODUCT_TITLE = 'Gapai Karier Impianmu sebagai Seorang UI/UX Designer & Pr
 const methods = {
   'Transfer Bank': ['Bank BCA', 'Bank BNI', 'Bank BRI', 'Bank Mandiri'],
   'E-Wallet': ['Dana', 'OVO', 'LinkAja', 'Shopee Pay'],
-  'Kartu Kredit/Debit': ['Mastercard', 'VISA', 'JCB'],
+  'Kartu Kredit/Debit': [],
+}
+const paymentLogos = {
+  'Bank BCA': { image: bcaLogo, key: 'bca', width: 80, height: 26 },
+  'Bank BNI': { image: bniLogo, key: 'bni', width: 80, height: 24 },
+  'Bank BRI': { image: briLogo, key: 'bri', width: 80, height: 41 },
+  'Bank Mandiri': { image: mandiriLogo, key: 'mandiri', width: 80, height: 25 },
+  Dana: { image: danaLogo, key: 'dana', width: 80, height: 23 },
+  OVO: { image: ovoLogo, key: 'ovo', width: 64, height: 65 },
+  LinkAja: { image: linkajaLogo, key: 'linkaja', width: 68, height: 60 },
+  'Shopee Pay': { image: shopeePayLogo, key: 'shopee-pay', width: 80, height: 36 },
+  Mastercard: { image: mastercardLogo, key: 'mastercard', width: 80, height: 50 },
+  VISA: { image: visaLogo, key: 'visa', width: 80, height: 26 },
+  JCB: { image: jcbLogo, key: 'jcb', width: 80, height: 62 },
 }
 const rupiah = (value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value)
 
@@ -59,26 +83,32 @@ function OrderSummary({ onSubmit, submitLabel, onSecondary, secondaryLabel, embe
   )
 }
 
-function PaymentLogo({ name }) {
-  if (name === 'Bank BCA') return <span className="payment-brand payment-brand--bca" aria-hidden="true"><svg viewBox="0 0 40 28"><path d="M4 5h10v18H4zM17 5h6v18h-6z" fill="#0876bd"/><path d="m11 5 10 18" stroke="#e62e32" strokeWidth="3"/><text x="25" y="19" fill="#0876bd" fontSize="10" fontWeight="700">BCA</text></svg></span>
-  if (name === 'Bank BNI') return <span className="payment-brand payment-brand--bni" aria-hidden="true"><svg viewBox="0 0 40 28"><path d="M2 5h14v18H2z" fill="#f15a24"/><path d="m3 7 11 14M14 7 3 21" stroke="white" strokeWidth="3"/><text x="19" y="19" fill="#f15a24" fontSize="12" fontWeight="700">BNI</text></svg></span>
-  if (name === 'Bank BRI') return <span className="payment-brand payment-brand--bri" aria-hidden="true"><svg viewBox="0 0 40 28"><path d="M5 4h13v20H5l7-10z" fill="none" stroke="#0876bd" strokeWidth="3"/><text x="22" y="19" fill="#0876bd" fontSize="12" fontWeight="700">BRI</text></svg></span>
-  if (name === 'Bank Mandiri') return <span className="payment-brand payment-brand--mandiri" aria-hidden="true"><svg viewBox="0 0 56 28"><path d="M2 8h15M2 12h15M2 16h15" stroke="#f3a92f" strokeWidth="2"/><text x="20" y="18" fill="#124b8a" fontSize="10" fontWeight="700">mandiri</text></svg></span>
-  if (name === 'Dana') return <span className="payment-brand payment-brand--dana" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="#168bea"/><text x="14" y="19" textAnchor="middle" fill="white" fontSize="16" fontWeight="700">D</text></svg></span>
-  if (name === 'OVO') return <span className="payment-brand payment-brand--ovo" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" fill="none" stroke="#60459b" strokeWidth="5"/><circle cx="14" cy="14" r="3" fill="white"/></svg></span>
-  if (name === 'LinkAja') return <span className="payment-brand payment-brand--linkaja" aria-hidden="true"><svg viewBox="0 0 28 28"><rect x="2" y="2" width="24" height="24" rx="3" fill="#e6262e"/><text x="14" y="12" textAnchor="middle" fill="white" fontSize="5.5" fontWeight="700">Link</text><text x="14" y="19" textAnchor="middle" fill="white" fontSize="5.5" fontWeight="700">Aja</text></svg></span>
-  if (name === 'Shopee Pay') return <span className="payment-brand payment-brand--shopee" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M5 9h18l-1 16H6z" fill="#f15a32"/><path d="M9 9a5 5 0 0 1 10 0" fill="none" stroke="#f15a32" strokeWidth="2"/><text x="14" y="21" textAnchor="middle" fill="white" fontSize="12" fontWeight="700">S</text></svg></span>
-  if (name === 'Mastercard') return <span className="payment-brand payment-brand--mastercard" aria-hidden="true"><svg viewBox="0 0 42 28"><circle cx="16" cy="14" r="10" fill="#eb001b"/><circle cx="26" cy="14" r="10" fill="#f79e1b" fillOpacity=".95"/></svg></span>
-  if (name === 'VISA') return <span className="payment-brand payment-brand--visa" aria-hidden="true"><svg viewBox="0 0 42 28"><text x="1" y="21" fill="#143b8f" fontSize="20" fontWeight="700" fontStyle="italic">VISA</text></svg></span>
-  return <span className="payment-brand payment-brand--jcb" aria-hidden="true"><svg viewBox="0 0 42 28"><rect x="2" y="4" width="12" height="20" fill="#0879bd"/><rect x="14" y="4" width="12" height="20" fill="#dd2833"/><rect x="26" y="4" width="12" height="20" fill="#16934a"/><text x="20" y="18" textAnchor="middle" fill="white" fontSize="9" fontWeight="700">JCB</text></svg></span>
+function PaymentLogo({ name, display = 'symbol' }) {
+  const brand = paymentLogos[name]
+  if (!brand) return null
+  const scale = (display === 'wordmark' ? 34 : 24) / brand.height
+  const width = brand.width * scale
+  const height = brand.height * scale
+  return (
+    <span className={'payment-brand payment-brand--' + brand.key + (display === 'wordmark' ? ' payment-brand--wordmark' : '')} aria-hidden="true" style={display === 'wordmark' ? { width, height, flexBasis: width } : undefined}>
+      <img src={brand.image} alt="" style={{ transform: 'scale(' + scale + ')' }} />
+    </span>
+  )
 }
 
 function PaymentChoices({ method, onChange, collapsed = false }) {
   return Object.entries(methods).map(([group, options]) => (
     <details className="payment-choice-group" key={group} open={!collapsed}>
       <summary>{group}</summary>
-      <div className="payment-choice-options">
-        {options.map((option) => (
+      <div className={group === 'Kartu Kredit/Debit' ? 'payment-choice-options payment-choice-options--cards' : 'payment-choice-options'}>
+        {group === 'Kartu Kredit/Debit' ? (
+          <label className={'payment-option payment-option--card' + (method === group ? ' payment-option--selected' : '')}>
+            <input type="radio" name="payment" value={group} checked={method === group} onChange={() => onChange(group)} />
+            <span className="sr-only">{group}</span>
+            <span className="payment-card-logos"><PaymentLogo name="Mastercard" display="wordmark" /><PaymentLogo name="VISA" display="wordmark" /><PaymentLogo name="JCB" display="wordmark" /></span>
+            {method === group && <strong aria-label="Terpilih">✓</strong>}
+          </label>
+        ) : options.map((option) => (
           <label className={'payment-option' + (method === option ? ' payment-option--selected' : '')} key={option}>
             <input type="radio" name="payment" value={option} checked={method === option} onChange={() => onChange(option)} />
             <PaymentLogo name={option} />
@@ -98,7 +128,9 @@ export default function Checkout() {
   const path = window.location.pathname
   const isPaying = path.endsWith('/pay')
   const isChanging = path.endsWith('/change-method')
-  const [method, setMethod] = useState(searchParams.get('method') || 'Bank BCA')
+  const requestedMethod = searchParams.get('method')
+  const availableMethods = [...Object.values(methods).flat(), 'Kartu Kredit/Debit']
+  const [method, setMethod] = useState(availableMethods.includes(requestedMethod) ? requestedMethod : 'Bank BCA')
   const [copied, setCopied] = useState(false)
   if (!course) return <main className="container empty-state"><h1>Kelas tidak ditemukan</h1><Link to="/courses">Lihat semua kelas</Link></main>
 
@@ -126,9 +158,11 @@ export default function Checkout() {
           <section className="content-panel">
             <h1>Metode Pembayaran</h1>
             <div className="virtual-account">
-              <strong>{method === 'Bank BCA' ? 'BCA' : method}</strong>
-              <p>Bayar Melalui Virtual Account BCA</p>
-              <div className="virtual-account__number">11739 081234567890 <button type="button" onClick={copyAccount}>{copied ? 'Tersalin' : 'Salin'}</button></div>
+              {method === 'Kartu Kredit/Debit'
+                ? <span className="payment-card-logos"><PaymentLogo name="Mastercard" display="wordmark" /><PaymentLogo name="VISA" display="wordmark" /><PaymentLogo name="JCB" display="wordmark" /></span>
+                : <PaymentLogo name={method} display="wordmark" />}
+              <p>{method.startsWith('Bank ') ? 'Bayar Melalui Virtual Account ' + method.slice(5) : 'Bayar Melalui ' + method}</p>
+              {method.startsWith('Bank ') && <div className="virtual-account__number">11739 081234567890 <button type="button" onClick={copyAccount}>{copied ? 'Tersalin' : 'Salin'}</button></div>}
             </div>
             <OrderSummary embedded submitLabel="Bayar Sekarang" onSubmit={() => finishPayment()} secondaryLabel="Ganti Metode Pembayaran" onSecondary={() => navigate('/checkout/' + course.id + '/change-method?method=' + encodeURIComponent(method))} />
           </section>

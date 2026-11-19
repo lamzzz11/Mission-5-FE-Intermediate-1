@@ -1,0 +1,8 @@
+Payment logo asset credit
+
+SVG artwork is from idn-finlogos by Hafidz Noor Fauzi:
+https://github.com/hafidznoor/idn-finlogos
+Artwork license: Creative Commons Attribution-NonCommercial 4.0 International
+https://creativecommons.org/licenses/by-nc/4.0/
+Figma design source: https://www.figma.com/community/file/1246763677986037137/bank-logo-library-indonesia-in-svg-format
+The SVG files are unchanged. Brand marks remain the property of their respective owners.
