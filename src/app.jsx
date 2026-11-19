@@ -9,6 +9,7 @@ import PaymentResult from './pages/paymentResult.jsx'
 import Orders from './pages/orders.jsx'
 import MyCourses from './pages/myCourses.jsx'
 import Profile from './pages/profile.jsx'
+import Learning from './pages/learning.jsx'
 
 export default function App() {
   return (
@@ -25,6 +26,12 @@ export default function App() {
       <Route path="/orders" element={<Orders />} />
       <Route path="/my-courses" element={<MyCourses />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/learn/:courseId" element={<Learning />} />
+      <Route path="/learn/:courseId/quiz/rules" element={<Learning />} />
+      <Route path="/learn/:courseId/quiz" element={<Learning />} />
+      <Route path="/learn/:courseId/quiz/result" element={<Learning />} />
+      <Route path="/learn/:courseId/review" element={<Learning />} />
+      <Route path="/learn/:courseId/certificate" element={<Learning />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
