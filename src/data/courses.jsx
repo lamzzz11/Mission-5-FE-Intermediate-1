@@ -37,5 +37,6 @@ export const courses = images.map((image, index) => ({
   },
   rating: 3.5,
   reviews: 86,
-  price: 300000,
+  price: index === 1 ? 100000 : 300000,
+  durationHours: [3, 5, 9, 6, 3, 10, 7, 4, 8][index],
 }))

@@ -6,7 +6,11 @@ import logoutIcon from '../assets/icons/logout.svg'
 import menuIcon from '../assets/icons/menu.svg'
 import logo from '../assets/logo.svg'
 
-const ACCOUNT_MENU = ['Profil Saya', 'Kelas Saya', 'Pesanan Saya']
+const ACCOUNT_MENU = [
+  { label: 'Profil Saya', to: '/profile' },
+  { label: 'Kelas Saya', to: '/my-courses' },
+  { label: 'Pesanan Saya', to: '/orders' },
+]
 
 export default function Navbar({ showMenu = true }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -85,11 +89,9 @@ export default function Navbar({ showMenu = true }) {
                     </a>
                   </li>
                 )}
-                {ACCOUNT_MENU.map((item) => (
-                  <li key={item}>
-                    <button type="button" className="navbar__dropdown-item" onClick={closeMenu}>
-                      {item}
-                    </button>
+                {ACCOUNT_MENU.map(({ label, to }) => (
+                  <li key={label}>
+                    <Link to={to} className="navbar__dropdown-item" onClick={closeMenu}>{label}</Link>
                   </li>
                 ))}
                 <li>

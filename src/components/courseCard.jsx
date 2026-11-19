@@ -1,6 +1,7 @@
 import starEmptyIcon from '../assets/icons/star-empty.svg'
 import starFullIcon from '../assets/icons/star-full.svg'
 import useIsMobile from '../hooks/useIsMobile.js'
+import { Link } from 'react-router-dom'
 
 const formatPrice = (price) => `Rp ${price / 1000}K`
 
@@ -29,7 +30,7 @@ export default function CourseCard({ course }) {
   const isMobile = useIsMobile()
 
   return (
-    <article className="course-card">
+    <Link to={`/courses/${course.id}`} className="course-card">
       <img className="course-card__image" src={image} alt={title} />
       <div className="course-card__body">
         <div className="course-card__text">
@@ -61,6 +62,6 @@ export default function CourseCard({ course }) {
         </div>
         <span className="course-card__price">{formatPrice(price)}</span>
       </div>
-    </article>
+    </Link>
   )
 }
