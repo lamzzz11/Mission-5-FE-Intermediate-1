@@ -1355,8 +1355,13 @@ ul {
   font-weight: 700;
 }
 
-.payment-help p {
-  padding-top: 12px;
+.payment-help ol {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 4px;
+  padding-left: 24px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
 }
 
 .payment-result-page {

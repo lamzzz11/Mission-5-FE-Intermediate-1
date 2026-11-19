@@ -20,6 +20,26 @@ const SUBTOTAL = 767500
 const ADMIN_FEE = 7000
 const TOTAL = SUBTOTAL + ADMIN_FEE
 const PRODUCT_TITLE = 'Gapai Karier Impianmu sebagai Seorang UI/UX Designer & Product Manager.'
+const paymentInstructions = {
+  'Transfer Bank': [
+    'Buka aplikasi mobile banking atau ATM bank yang kamu pilih.',
+    'Pilih menu Transfer, lalu Virtual Account.',
+    'Masukkan nomor Virtual Account yang tertera pada halaman ini.',
+    'Cek nama penerima dan total pembayaran, lalu konfirmasi.',
+  ],
+  'E-Wallet': [
+    'Buka aplikasi e-wallet yang kamu pilih.',
+    'Pilih menu Bayar atau Pay.',
+    'Periksa nama merchant dan total pembayaran.',
+    'Konfirmasi pembayaran melalui aplikasi e-wallet.',
+  ],
+  'Kartu Kredit/Debit': [
+    'Siapkan kartu Mastercard, Visa, atau JCB yang akan digunakan.',
+    'Lanjutkan pembayaran dan isi data kartu pada halaman pembayaran.',
+    'Periksa total pembayaran sebelum melanjutkan.',
+    'Selesaikan verifikasi dari bank jika diminta.',
+  ],
+}
 const methods = {
   'Transfer Bank': ['Bank BCA', 'Bank BNI', 'Bank BRI', 'Bank Mandiri'],
   'E-Wallet': ['Dana', 'OVO', 'LinkAja', 'Shopee Pay'],
@@ -167,7 +187,7 @@ export default function Checkout() {
           </section>
           <section className="content-panel">
             <h2>Tata Cara Pembayaran</h2>
-            {Object.keys(methods).map((group) => <details className="payment-help" key={group}><summary>{group}</summary></details>)}
+            {Object.keys(methods).map((group) => <details className="payment-help" key={group}><summary>{group}</summary><ol>{paymentInstructions[group].map((step) => <li key={step}>{step}</li>)}</ol></details>)}
           </section>
         </> : isChanging ? <>
           <section className="content-panel">
