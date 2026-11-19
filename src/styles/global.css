@@ -1355,6 +1355,16 @@ ul {
   font-weight: 700;
 }
 
+.payment-help__selected {
+  margin: 12px 0;
+}
+
+.payment-help__notice {
+  margin-top: 16px;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
 .payment-help ol {
   display: grid;
   gap: 8px;
