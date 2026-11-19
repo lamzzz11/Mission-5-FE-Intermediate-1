@@ -12,7 +12,7 @@ const ACCOUNT_MENU = [
   { label: 'Pesanan Saya', to: '/orders' },
 ]
 
-export default function Navbar({ showMenu = true }) {
+export default function Navbar({ showMenu = true, logoTo = '/home' }) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef(null)
   const navigate = useNavigate()
@@ -47,7 +47,7 @@ export default function Navbar({ showMenu = true }) {
   return (
     <header className="navbar">
       <div className="container navbar__inner">
-        <Link to="/" className="navbar__logo">
+        <Link to={logoTo} className="navbar__logo">
           <img src={logo} alt="videobelajar" />
         </Link>
 

@@ -4,7 +4,6 @@ import HeroBanner from '../components/home/heroBanner.jsx'
 import Newsletter from '../components/home/newsletter.jsx'
 import Navbar from '../components/navbar.jsx'
 import { categories, courses } from '../data/courses.jsx'
-import { Link } from 'react-router-dom'
 
 const COURSE_SECTION_ID = 'kategori'
 
@@ -30,7 +29,6 @@ export default function Home() {
           categories={categories}
           courses={courses}
         />
-        <Link className="btn btn--outline home__all-courses" to="/courses">Lihat Semua Kelas</Link>
         <Newsletter
           eyebrow="NEWSLETTER"
           title="Mau Belajar Lebih Banyak?"

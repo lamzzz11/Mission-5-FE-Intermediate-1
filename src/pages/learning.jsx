@@ -1,81 +1,286 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import Button from '../components/button.jsx'
 import Footer from '../components/footer.jsx'
 import Navbar from '../components/navbar.jsx'
 import { courses } from '../data/courses.jsx'
+import avatar from '../assets/avatars/avatar-1.png'
+import certificatePreview from '../assets/images/certificate-preview.png'
+import quizSubmit from '../assets/images/quiz-submit.png'
 
-const questions = [
-  { prompt: 'Apa tujuan utama membuat persona pengguna?', options: ['Memahami kebutuhan pengguna', 'Memilih warna favorit tim', 'Menghitung biaya server'], answer: 0 },
-  { prompt: 'Kapan sebuah desain perlu diuji?', options: ['Setelah produk dirilis saja', 'Sejak ide mulai dibuat', 'Tidak perlu diuji'], answer: 1 },
-  { prompt: 'Apa yang sebaiknya dilakukan setelah mendapat masukan?', options: ['Mengabaikan semua masukan', 'Mencoba memperbaiki desain', 'Menghapus seluruh proyek'], answer: 1 },
+const courseName = 'Foundations of User Experience Design'
+const lessons = Array(5).fill('Video: Introduction to HR')
+const questionText = 'Memikirkan dan mengantisipasi secara teliti adanya user secara tidak sengaja mengutak-atik konfigurasi, namun dapat diatasi dengan membuat default yang mengurangi kepanikan pada user adalah pengertian dari ...'
+const answersText = [
+  'Memikirkan tentang default *',
+  'Mempertimbangkan page layout berdasarkan suatu tujuan tertentu',
+  'Memastikan bahwa sistem berjalan sesuai dengan apa yang terjadi saat itu juga',
+  'Menciptakan konsistensi dan menggunakan elemen UI umum',
 ]
-const lessons = ['Pengenalan kelas', 'Dasar-dasar materi', 'Studi kasus', 'Rangkuman dan latihan']
+const questions = Array.from({ length: 10 }, (_, index) => ({ number: index + 1, prompt: questionText, answers: answersText }))
 
-function ProgressHeader({ course }) {
-  return <div className="learning-heading"><p><Link to="/my-courses">Kelas Saya</Link> / {course.title}</p><h1>{course.title}</h1></div>
-}
-
-function CoursePlayer({ course, courseId }) {
-  const [lessonIndex, setLessonIndex] = useState(0)
-  const [complete, setComplete] = useState(() => {
-    try { return JSON.parse(localStorage.getItem(`videobelajar-progress-${courseId}`) || '[]') } catch { return [] }
-  })
-  const markComplete = () => {
-    const updated = complete.includes(lessonIndex) ? complete : [...complete, lessonIndex]
-    setComplete(updated)
-    localStorage.setItem(`videobelajar-progress-${courseId}`, JSON.stringify(updated))
-  }
-
+function LearningHeader({ completed = false, courseId }) {
   return (
-    <>
-      <ProgressHeader course={course} />
-      <div className="learning-layout">
-        <section className="learning-main content-panel">
-          <div className="video-placeholder"><span aria-hidden="true">▶</span><p>Video pembelajaran · {lessons[lessonIndex]}</p><small>Video akan tersedia pada versi backend.</small></div>
-          <div className="learning-lesson-heading"><div><h2>{lessons[lessonIndex]}</h2><p>Materi {lessonIndex + 1} dari {lessons.length}</p></div><Button variant="outline" onClick={markComplete}>{complete.includes(lessonIndex) ? 'Selesai ✓' : 'Tandai Selesai'}</Button></div>
-          <p>{course.description}. Ikuti materi sesuai urutan, lalu kerjakan ujian akhir untuk mengukur pemahamanmu.</p>
-          <div className="learning-actions"><Link className="btn btn--outline" to="/my-courses">Kembali ke Kelas Saya</Link><Link className="btn btn--primary" to={`/learn/${courseId}/quiz/rules`}>Mulai Ujian Akhir</Link></div>
-        </section>
-        <aside className="content-panel lesson-list"><h2>Materi Kelas</h2><p>{complete.length} dari {lessons.length} materi selesai</p>{lessons.map((lesson, index) => <button className={index === lessonIndex ? 'lesson-list__item is-active' : 'lesson-list__item'} type="button" onClick={() => setLessonIndex(index)} key={lesson}><span>{complete.includes(index) ? '✓' : '▶'}</span><span>{lesson}<small>Video · 12 menit</small></span></button>)}</aside>
-      </div>
-    </>
+    <header className="learning-topbar">
+      <Link to="/my-courses" className="learning-topbar__back"><span aria-hidden="true">←</span><span>{courseName}</span></Link>
+      {completed ? <Link className="learning-topbar__trophy" to={'/learn/' + courseId + '/certificate'} aria-label="Ambil Sertifikat">🏆 <span>⌄</span></Link> : <div className="learning-topbar__progress"><span /><strong>10/12</strong><span aria-hidden="true">⌄</span></div>}
+      <img className="learning-topbar__avatar" src={avatar} alt="Profil" />
+    </header>
   )
 }
 
-function QuizRules({ courseId }) {
-  return <section className="content-panel quiz-card"><p className="learning-eyebrow">Ujian Akhir</p><h1>Aturan Ujian</h1><p>Pastikan kamu sudah mempelajari materi sebelum memulai. Jawab semua pertanyaan, lalu kirim jawaban untuk melihat hasilnya.</p><ul><li>3 pertanyaan pilihan ganda</li><li>Pilih satu jawaban untuk setiap pertanyaan</li><li>Nilai minimal untuk lulus adalah 2 jawaban benar</li></ul><Link className="btn btn--primary" to={`/learn/${courseId}/quiz`}>Mulai Ujian</Link></section>
+function ModuleSidebar({ courseId, active }) {
+  const base = '/learn/' + courseId
+  return (
+    <aside className="learning-modules">
+      <h2>Daftar Modul</h2>
+      <details open>
+        <summary>Introduction to HR</summary>
+        <div className="learning-module-list">
+          <Link className={active === 'pretest' ? 'learning-module is-active' : 'learning-module'} to={base + '/pretest/rules'}><span className="learning-module__icon">▧</span><span>Pre-Test: Introduction to HR<small>10 Pertanyaan</small></span></Link>
+          {lessons.map((lesson, index) => (
+            <Link className={active === 'video-' + index ? 'learning-module is-active' : 'learning-module'} to={base} key={lesson + index}>
+              <span className="learning-module__check">✓</span><span>{lesson}<small>12 Menit</small></span>
+            </Link>
+          ))}
+          <Link className={active === 'summary' ? 'learning-module is-active' : 'learning-module'} to={base + '/summary'}>
+            <span className="learning-module__icon">▧</span><span>Rangkuman: Introduction to HR<small>12 Menit</small></span>
+          </Link>
+          <Link className={active === 'quiz' ? 'learning-module is-active' : 'learning-module'} to={base + '/quiz/rules'}>
+            <span className="learning-module__icon">♧</span><span>Quiz: Introduction to HR<small>10 Pertanyaan</small></span>
+          </Link>
+          <Link className={active === 'exam' ? 'learning-module is-active' : 'learning-module'} to={base + '/exam/rules'}>
+            <span className="learning-module__icon">▧</span><span>Ujian Akhir: Introduction to HR<small>10 Pertanyaan</small></span>
+          </Link>
+        </div>
+      </details>
+      <details><summary>Introduction to HR</summary></details>
+      <details><summary>Introduction to HR</summary></details>
+      <Link className="learning-review-link" to={base + '/review'}>☆ Beri Review & Rating</Link>
+    </aside>
+  )
 }
 
-function Quiz({ courseId }) {
+function LearningFooter({ courseId, previous = '/my-courses', next = '/learn/' + courseId + '/pretest/rules' }) {
+  return (
+    <nav className="learning-footer" aria-label="Navigasi kelas">
+      <Link to={previous}><span aria-hidden="true">‹</span><span>{courseName}</span></Link>
+      <Link to={next}><span>{courseName}</span><span aria-hidden="true">›</span></Link>
+    </nav>
+  )
+}
+
+function LearningShell({ children, courseId, active, className = '', completed = false }) {
+  return (
+    <div className={'learning-shell ' + className}>
+      <LearningHeader completed={completed} courseId={courseId} />
+      <div className="learning-shell__content">{children}</div>
+      <ModuleSidebar courseId={courseId} active={active} />
+      <LearningFooter courseId={courseId} />
+    </div>
+  )
+}
+
+function Player({ courseId, summary = false }) {
+  return (
+    <LearningShell courseId={courseId} active={summary ? 'summary' : 'video-0'} className="learning-player">
+      <main className="learning-main">
+        <div className="learning-video"><span aria-hidden="true">▶</span></div>
+        {summary ? (
+          <section className="learning-description">
+            <h1>Download Rangkuman Modul</h1>
+            <p>Silakan download rangkuman modul dari materi yang telah kamu pelajari</p>
+            <button className="btn btn--outline" type="button">⇩ &nbsp; Download Rangkuman</button>
+          </section>
+        ) : (
+          <section className="learning-description">
+            <h1>Praktikkan Skill dengan Technical Book</h1>
+            <p>Pelajari dan praktikkan skill teknis dalam berbagai industri dengan Technical Book Rislearn</p>
+            <div className="learning-instructor">
+              <img src={avatar} alt="" />
+              <span><strong>Jenna Ortega</strong><small>Senior Accountant di <b>Gojek</b></small></span>
+            </div>
+            <p className="learning-rating">★★★☆☆ <span>3.5 (86)</span></p>
+          </section>
+        )}
+      </main>
+    </LearningShell>
+  )
+}
+
+function Rules({ courseId, pretest, exam }) {
+  const base = '/learn/' + courseId + (pretest ? '/pretest' : exam ? '/exam' : '/quiz')
+  return (
+    <LearningShell courseId={courseId} active={pretest ? 'pretest' : exam ? 'exam' : 'quiz'} className="learning-rules">
+      <main className="learning-main">
+        <div className="rules-banner"><span>RULES</span></div>
+        <section className="learning-description learning-rules__copy">
+          <h1>Aturan</h1>
+          <p>Kerjakan {pretest ? 'pretest' : exam ? 'ujian akhir' : 'quiz'} dengan sebaik mungkin untuk mengukur pemahamanmu terkait materi yang akan kamu pelajari.</p>
+          <p>Syarat Nilai Kelulusan -<br />Durasi Ujian: 5 Menit</p>
+          <p>Jangan khawatir, total skor tidak akan memengaruhi kelulusan dan penilaian akhir dalam rangkaian kelas ini.</p>
+          <Link className="btn btn--primary" to={base}>{pretest ? 'Mulai Pre-Test' : exam ? 'Mulai Ujian Akhir' : 'Mulai Quiz'}</Link>
+        </section>
+      </main>
+    </LearningShell>
+  )
+}
+
+function Quiz({ courseId, pretest, exam }) {
   const navigate = useNavigate()
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null))
-  const [error, setError] = useState('')
-  const submitQuiz = (event) => {
-    event.preventDefault()
-    if (answers.includes(null)) { setError('Pilih jawaban untuk semua pertanyaan terlebih dahulu.'); return }
-    const score = answers.reduce((total, answer, index) => total + Number(answer === questions[index].answer), 0)
-    localStorage.setItem(`videobelajar-quiz-${courseId}`, JSON.stringify({ score, total: questions.length }))
-    navigate(`/learn/${courseId}/quiz/result`)
+  const mode = pretest ? 'Pretest' : exam ? 'UjianAkhir' : 'Quiz'
+  const base = '/learn/' + courseId + (pretest ? '/pretest' : exam ? '/exam' : '/quiz')
+  const [current, setCurrent] = useState(0)
+  const [answers, setAnswers] = useState(() => {
+    const initial = [0, null, null, null, null, null, null, null, null, null]
+    try {
+      const stored = JSON.parse(localStorage.getItem('videobelajar-' + mode + '-' + courseId) || 'null')
+      return Array.isArray(stored) && stored.length === 10 && stored.every((answer) => answer === null || Number.isInteger(answer) && answer >= 0 && answer < 4) ? stored : initial
+    } catch { return initial }
+  })
+  const [confirm, setConfirm] = useState(false)
+  const [missing, setMissing] = useState(false)
+  const question = questions[current]
+  const updateAnswer = (value) => {
+    const updated = answers.map((answer, index) => index === current ? value : answer)
+    setAnswers(updated)
+    try { localStorage.setItem('videobelajar-' + mode + '-' + courseId, JSON.stringify(updated)) } catch { /* Keep the answers for this session. */ }
+    setMissing(false)
+  }
+  const finish = () => {
+    if (answers.some((answer) => answer === null)) { setConfirm(false); setMissing(true); return }
+    const score = Math.round(answers.filter((answer) => answer === 0).length / questions.length * 100)
+    try { localStorage.setItem('videobelajar-result-' + mode + '-' + courseId, JSON.stringify({ score, total: questions.length, correct: Math.round(score / 10) })) } catch { /* Keep the result on this screen. */ }
+    navigate(base + '/result', { state: { score, total: questions.length, correct: Math.round(score / 10) } })
   }
 
-  return <form className="content-panel quiz-card" onSubmit={submitQuiz}><p className="learning-eyebrow">Ujian Akhir</p><h1>Uji Pemahamanmu</h1>{questions.map((question, index) => <fieldset className="quiz-question" key={question.prompt}><legend>{index + 1}. {question.prompt}</legend>{question.options.map((option, optionIndex) => <label key={option}><input type="radio" name={`question-${index}`} checked={answers[index] === optionIndex} onChange={() => setAnswers((current) => current.map((answer, answerIndex) => answerIndex === index ? optionIndex : answer))} />{option}</label>)}</fieldset>)}{error && <p className="field__error" role="alert">{error}</p>}<Button type="submit">Kirim Jawaban</Button></form>
+  return (
+    <LearningShell courseId={courseId} active={pretest ? 'pretest' : exam ? 'exam' : 'quiz'} className="learning-quiz">
+      <aside className="quiz-index">
+        <h1>List Soal</h1>
+        <div className="quiz-index__grid">
+          {questions.map((item, index) => (
+            <button className={(current === index ? 'is-current ' : '') + (answers[index] !== null && index !== current ? 'is-answered' : '')} type="button" onClick={() => setCurrent(index)} key={item.number}>{item.number}</button>
+          ))}
+        </div>
+        <p>Selesaikan semua soal untuk mengakhiri {pretest ? 'pretest' : exam ? 'ujian akhir' : 'quiz'}</p>
+      </aside>
+      <main className="learning-main quiz-question">
+        <h1>Pertanyaan {question.number}</h1>
+        <p>{question.prompt}</p>
+        <fieldset>
+          <legend className="sr-only">Pilih jawaban</legend>
+          {question.answers.map((answer, index) => (
+            <label className={answers[current] === index ? 'is-selected' : ''} key={answer}>
+              <input type="radio" name={'question-' + current} checked={answers[current] === index} onChange={() => updateAnswer(index)} />
+              <span>{answer}</span>
+            </label>
+          ))}
+        </fieldset>
+        {missing && <p className="quiz-missing" role="alert">Selesaikan semua soal untuk mengakhiri {pretest ? 'pretest' : exam ? 'ujian akhir' : 'quiz'}.</p>}
+        <div className="quiz-actions">
+          <button className="btn btn--outline" type="button" disabled={current === 0} onClick={() => setCurrent((value) => value - 1)}>← &nbsp; Sebelumnya</button>
+          {current < questions.length - 1
+            ? <button className="btn btn--primary" type="button" onClick={() => setCurrent((value) => value + 1)}>Selanjutnya &nbsp; →</button>
+            : <button className="btn btn--accent" type="button" onClick={() => setConfirm(true)}>Submit &nbsp; →</button>}
+        </div>
+        {confirm && <div className="learning-modal-backdrop">
+          <section className="learning-modal" role="dialog" aria-modal="true" aria-labelledby="finish-title">
+            <img src={quizSubmit} alt="" />
+            <h2 id="finish-title">Selesaikan {pretest ? 'Pretest' : exam ? 'Ujian Akhir' : 'Quiz'}</h2>
+            <p>Apakah kamu yakin untuk menyelesaikan {pretest ? 'pretest' : exam ? 'ujian akhir' : 'quiz'} ini?</p>
+            <div><button className="btn btn--outline" type="button" onClick={() => setConfirm(false)}>Batal</button><button className="btn btn--primary" type="button" onClick={finish}>Selesai</button></div>
+          </section>
+        </div>}
+      </main>
+    </LearningShell>
+  )
 }
 
-function QuizResult({ courseId }) {
-  let result = { score: 0, total: questions.length }
-  try { result = JSON.parse(localStorage.getItem(`videobelajar-quiz-${courseId}`) || '{}') } catch { /* Keep the empty result when storage is unavailable. */ }
-  const passed = result.score >= 2
-  return <section className="content-panel quiz-result"><div className={passed ? 'quiz-result__mark' : 'quiz-result__mark quiz-result__mark--retry'}>{passed ? '✓' : '!'}</div><h1>{passed ? 'Selamat, kamu lulus!' : 'Ujian belum lulus'}</h1><p>Skor kamu: <strong>{result.score ?? 0} / {result.total ?? questions.length}</strong></p><div className="learning-actions"><Link className="btn btn--outline" to={`/learn/${courseId}/quiz`}>Ulangi Ujian</Link>{passed && <Link className="btn btn--primary" to={`/learn/${courseId}/certificate`}>Lihat Sertifikat</Link>}<Link className="btn btn--outline" to={`/learn/${courseId}/review`}>Tulis Ulasan</Link></div></section>
+function Result({ courseId, pretest, exam, completed = false }) {
+  const mode = pretest ? 'Pretest' : exam ? 'UjianAkhir' : 'Quiz'
+  const location = useLocation()
+  let result = { score: 20, total: 10, correct: 2 }
+  try {
+    const stored = JSON.parse(localStorage.getItem('videobelajar-result-' + mode + '-' + courseId) || 'null')
+    if (Number.isInteger(stored?.score) && stored.score >= 0 && stored.score <= 100 && Number.isInteger(stored?.correct) && stored.correct >= 0 && stored.correct <= 10) result = { ...result, ...stored }
+  } catch { /* Keep the example result when storage is unavailable. */ }
+  if (completed) result = { score: 100, total: 10, correct: 10 }
+  if (Number.isInteger(location.state?.score) && location.state.score >= 0 && location.state.score <= 100) result = { ...result, ...location.state }
+  if (completed) result = { score: 100, total: 10, correct: 10 }
+  const passed = result.score >= 80
+  const base = '/learn/' + courseId + (pretest ? '/pretest' : exam ? '/exam' : '/quiz')
+  return (
+    <LearningShell courseId={courseId} active={pretest ? 'pretest' : exam ? 'exam' : 'quiz'} className="learning-result" completed={completed}>
+      <main className="learning-main">
+        <div className={'result-banner ' + (passed ? 'result-banner--pass' : 'result-banner--retry')}><span>{passed ? 'CONGRATS' : 'TRY AGAIN'}</span></div>
+        <section className="learning-description result-copy">
+          <h1>Tanggal {pretest ? 'Pretest' : exam || completed ? 'Ujian Akhir' : 'Quiz'}:</h1>
+          <p>23 September 2022, 10:20 AM</p>
+          <div className="result-table">
+            <div><span>Nilai</span><strong className={passed ? 'pass' : 'retry'}>{result.score}</strong></div>
+            <div><span>Soal</span><strong>10</strong></div>
+            <div><span>Benar</span><strong>● {result.correct ?? 0}</strong></div>
+            <div><span>Salah</span><strong>● {result.total - (result.correct ?? 0)}</strong></div>
+          </div>
+          <h2>{passed ? 'Selesai!' : 'Sedikit Lagi!'}</h2>
+          <p>{passed ? (pretest ? 'Pretest sudah selesai dan kami sudah mengetahui progresmu.' : exam ? 'Ujian Akhir sudah selesai.' : 'Quiz sudah selesai.') : 'Kamu sudah menyelesaikan quiz dengan baik namun nilaimu belum cukup untuk melanjutkan materi.'}</p>
+          <p>{passed ? (exam ? 'Modul sudah selesai.' : 'Saatnya memulai kelas!') : 'Pelajari kembali modul sebelumnya dan kerjakan kembali quiz ini!'}</p>
+          {passed
+            ? <Link className="btn btn--primary" to={exam ? '/learn/' + courseId + '/done' : base}>Mulai Kelas</Link>
+            : <Link className="btn btn--outline" to={base}>⟳ &nbsp; Ulangi Quiz</Link>}
+        </section>
+      </main>
+      {completed && <section className="certificate-popover"><h2>Modul sudah selesai</h2><p>16 dari 16 modul telah selesai, silahkan download sertifikat</p><Link className="btn btn--primary" to={'/learn/' + courseId + '/certificate'}>Ambil Sertifikat</Link></section>}
+    </LearningShell>
+  )
 }
 
-function Review({ course }) {
-  const [sent, setSent] = useState(false)
-  return <form className="content-panel quiz-card" onSubmit={(event) => { event.preventDefault(); setSent(true) }}><p className="learning-eyebrow">Ulasan Kelas</p><h1>Bagaimana pengalaman belajarmu?</h1><label className="review-label">Rating<select required defaultValue="5">{[5, 4, 3, 2, 1].map((rating) => <option value={rating} key={rating}>{rating} bintang</option>)}</select></label><label className="review-label">Ulasan<textarea required rows="5" placeholder={`Ceritakan pengalamanmu mengikuti ${course.title}`} /></label><Button type="submit">Kirim Ulasan</Button>{sent && <p role="status" className="profile-saved">Terima kasih, ulasanmu sudah disimpan di halaman ini.</p>}</form>
+function Review({ courseId }) {
+  const navigate = useNavigate()
+  const [rating, setRating] = useState(0)
+  const [review, setReview] = useState('')
+  return (
+    <div className="learning-review-screen">
+      <Player courseId={courseId} />
+      <div className="learning-modal-backdrop">
+        <form className="learning-modal learning-review-modal" onSubmit={(event) => { event.preventDefault(); navigate('/learn/' + courseId + '/done') }}>
+          <h1>Tulis Review Terbaikmu!</h1>
+          <p>Apakah kamu yakin untuk menyelesaikan pretest ini?</p>
+          <div className="review-stars" aria-label="Rating">
+            {[1, 2, 3, 4, 5].map((star) => <button type="button" className={rating >= star ? 'is-selected' : ''} onClick={() => setRating(star)} aria-label={star + ' bintang'} key={star}>★</button>)}
+          </div>
+          <label className="sr-only" htmlFor="review-content">Masukkan Review</label>
+          <textarea id="review-content" placeholder="Masukkan Review" value={review} onChange={(event) => setReview(event.target.value)} />
+          <div><button className="btn btn--outline" type="button" onClick={() => navigate('/learn/' + courseId)}>Batal</button><button className="btn btn--primary" type="submit" disabled={!rating}>Selesai</button></div>
+        </form>
+      </div>
+    </div>
+  )
 }
 
-function Certificate({ course }) {
-  return <div className="certificate-wrap"><article className="certificate"><p>VIDEOBELAJAR</p><h1>Sertifikat Penyelesaian</h1><span>Diberikan kepada</span><h2>Student VideoBelajar</h2><p>Telah menyelesaikan kelas</p><h3>{course.title}</h3><div className="certificate__footer"><span>VideoBelajar<br /><small>Platform Pembelajaran</small></span><span>2026</span></div></article><button className="btn btn--primary" type="button" onClick={() => window.print()}>Cetak Sertifikat</button></div>
+function Done({ courseId }) {
+  return <Result courseId={courseId} pretest={false} exam completed />
+}
+
+function Certificate() {
+  return (
+    <>
+      <Navbar />
+      <main className="container certificate-page">
+        <p className="breadcrumb"><Link to="/home">Beranda</Link> / Desain / Gapai Karier Impianmu / Sertifikat</p>
+        <section className="certificate-product">
+          <img src={certificatePreview} alt="Certificate of Completion untuk Morgan Maxwell" />
+          <div className="certificate-product__details">
+            <div><h1>Big 4 Auditor Financial Analyst</h1><p>Mulai transformasi dengan instruktur profesional, harga yang terjangkau, dan kurikulum terbaik</p></div>
+            <a className="btn btn--outline" href={certificatePreview} download="Sertifikat-VideoBelajar.png">⇩ &nbsp; Download Sertifikat</a>
+            <p className="learning-instructor"><strong>Jenna Ortega</strong><span>Senior Accountant di <b>Gojek</b></span></p>
+            <p className="learning-rating">★★★☆☆ <span>3.5 (86)</span></p>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  )
 }
 
 export default function Learning() {
@@ -84,13 +289,14 @@ export default function Learning() {
   const course = courses.find((item) => item.id === Number(courseId))
   if (!course) return <main className="container empty-state"><h1>Kelas tidak ditemukan</h1><Link to="/my-courses">Kembali ke Kelas Saya</Link></main>
 
-  let screen
-  if (pathname.endsWith('/quiz/rules')) screen = <QuizRules courseId={courseId} />
-  else if (pathname.endsWith('/quiz/result')) screen = <QuizResult courseId={courseId} />
-  else if (pathname.endsWith('/quiz')) screen = <Quiz courseId={courseId} />
-  else if (pathname.endsWith('/review')) screen = <Review course={course} />
-  else if (pathname.endsWith('/certificate')) screen = <Certificate course={course} />
-  else screen = <CoursePlayer course={course} courseId={courseId} />
-
-  return <><Navbar /><main className="container learning-page">{screen}</main><Footer /></>
+  const pretest = pathname.includes('/pretest')
+  const exam = pathname.includes('/exam')
+  if (pathname.endsWith('/review')) return <Review courseId={courseId} />
+  if (pathname.endsWith('/certificate')) return <Certificate />
+  if (pathname.endsWith('/done')) return <Done courseId={courseId} />
+  if (pathname.endsWith('/summary')) return <Player courseId={courseId} summary />
+  if (pathname.endsWith('/rules')) return <Rules courseId={courseId} pretest={pretest} exam={exam} />
+  if (pathname.endsWith('/result')) return <Result courseId={courseId} pretest={pretest} exam={exam} />
+  if (pathname.endsWith('/quiz') || pathname.endsWith('/pretest') || pathname.endsWith('/exam')) return <Quiz courseId={courseId} pretest={pretest} exam={exam} />
+  return <Player courseId={courseId} />
 }

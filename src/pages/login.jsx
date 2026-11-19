@@ -15,7 +15,7 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    navigate('/')
+    navigate('/home')
   }
 
   return (

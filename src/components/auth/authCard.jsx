@@ -3,7 +3,7 @@ import Navbar from '../navbar.jsx'
 export default function AuthCard({ title, subtitle, onSubmit, children }) {
   return (
     <>
-      <Navbar showMenu={false} />
+      <Navbar showMenu={false} logoTo="/" />
       <main className="auth">
         <div className="auth__card">
           <div className="auth__header">
