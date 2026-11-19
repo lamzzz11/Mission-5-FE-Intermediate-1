@@ -3622,3 +3622,59 @@ ul {
     width: 100%;
   }
 }
+
+
+/* Payment choices use the Figma brand marks and animate only user feedback. */
+.payment-option {
+  transition: border-color .18s ease, background-color .18s ease, transform .18s ease;
+}
+.payment-option:hover {
+  transform: translateY(-1px);
+}
+.payment-option:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+.payment-option--selected {
+  animation: payment-choice-select .22s ease-out;
+}
+.payment-option--selected > strong {
+  animation: payment-check-in .22s ease-out;
+}
+.payment-brand {
+  display: inline-grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+}
+.payment-brand svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.payment-result-art {
+  animation: payment-art-enter .55s ease-out both;
+}
+@keyframes payment-choice-select {
+  0% { transform: scale(.99); }
+  65% { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+@keyframes payment-check-in {
+  from { opacity: 0; transform: scale(.65); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes payment-art-enter {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .payment-option,
+  .payment-option--selected,
+  .payment-option--selected > strong,
+  .payment-result-art {
+    animation: none;
+    transition: none;
+  }
+}

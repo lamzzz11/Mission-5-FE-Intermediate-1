@@ -59,6 +59,20 @@ function OrderSummary({ onSubmit, submitLabel, onSecondary, secondaryLabel, embe
   )
 }
 
+function PaymentLogo({ name }) {
+  if (name === 'Bank BCA') return <span className="payment-brand payment-brand--bca" aria-hidden="true"><svg viewBox="0 0 40 28"><path d="M4 5h10v18H4zM17 5h6v18h-6z" fill="#0876bd"/><path d="m11 5 10 18" stroke="#e62e32" strokeWidth="3"/><text x="25" y="19" fill="#0876bd" fontSize="10" fontWeight="700">BCA</text></svg></span>
+  if (name === 'Bank BNI') return <span className="payment-brand payment-brand--bni" aria-hidden="true"><svg viewBox="0 0 40 28"><path d="M2 5h14v18H2z" fill="#f15a24"/><path d="m3 7 11 14M14 7 3 21" stroke="white" strokeWidth="3"/><text x="19" y="19" fill="#f15a24" fontSize="12" fontWeight="700">BNI</text></svg></span>
+  if (name === 'Bank BRI') return <span className="payment-brand payment-brand--bri" aria-hidden="true"><svg viewBox="0 0 40 28"><path d="M5 4h13v20H5l7-10z" fill="none" stroke="#0876bd" strokeWidth="3"/><text x="22" y="19" fill="#0876bd" fontSize="12" fontWeight="700">BRI</text></svg></span>
+  if (name === 'Bank Mandiri') return <span className="payment-brand payment-brand--mandiri" aria-hidden="true"><svg viewBox="0 0 56 28"><path d="M2 8h15M2 12h15M2 16h15" stroke="#f3a92f" strokeWidth="2"/><text x="20" y="18" fill="#124b8a" fontSize="10" fontWeight="700">mandiri</text></svg></span>
+  if (name === 'Dana') return <span className="payment-brand payment-brand--dana" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="#168bea"/><text x="14" y="19" textAnchor="middle" fill="white" fontSize="16" fontWeight="700">D</text></svg></span>
+  if (name === 'OVO') return <span className="payment-brand payment-brand--ovo" aria-hidden="true"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" fill="none" stroke="#60459b" strokeWidth="5"/><circle cx="14" cy="14" r="3" fill="white"/></svg></span>
+  if (name === 'LinkAja') return <span className="payment-brand payment-brand--linkaja" aria-hidden="true"><svg viewBox="0 0 28 28"><rect x="2" y="2" width="24" height="24" rx="3" fill="#e6262e"/><text x="14" y="12" textAnchor="middle" fill="white" fontSize="5.5" fontWeight="700">Link</text><text x="14" y="19" textAnchor="middle" fill="white" fontSize="5.5" fontWeight="700">Aja</text></svg></span>
+  if (name === 'Shopee Pay') return <span className="payment-brand payment-brand--shopee" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M5 9h18l-1 16H6z" fill="#f15a32"/><path d="M9 9a5 5 0 0 1 10 0" fill="none" stroke="#f15a32" strokeWidth="2"/><text x="14" y="21" textAnchor="middle" fill="white" fontSize="12" fontWeight="700">S</text></svg></span>
+  if (name === 'Mastercard') return <span className="payment-brand payment-brand--mastercard" aria-hidden="true"><svg viewBox="0 0 42 28"><circle cx="16" cy="14" r="10" fill="#eb001b"/><circle cx="26" cy="14" r="10" fill="#f79e1b" fillOpacity=".95"/></svg></span>
+  if (name === 'VISA') return <span className="payment-brand payment-brand--visa" aria-hidden="true"><svg viewBox="0 0 42 28"><text x="1" y="21" fill="#143b8f" fontSize="20" fontWeight="700" fontStyle="italic">VISA</text></svg></span>
+  return <span className="payment-brand payment-brand--jcb" aria-hidden="true"><svg viewBox="0 0 42 28"><rect x="2" y="4" width="12" height="20" fill="#0879bd"/><rect x="14" y="4" width="12" height="20" fill="#dd2833"/><rect x="26" y="4" width="12" height="20" fill="#16934a"/><text x="20" y="18" textAnchor="middle" fill="white" fontSize="9" fontWeight="700">JCB</text></svg></span>
+}
+
 function PaymentChoices({ method, onChange, collapsed = false }) {
   return Object.entries(methods).map(([group, options]) => (
     <details className="payment-choice-group" key={group} open={!collapsed}>
@@ -67,7 +81,7 @@ function PaymentChoices({ method, onChange, collapsed = false }) {
         {options.map((option) => (
           <label className={'payment-option' + (method === option ? ' payment-option--selected' : '')} key={option}>
             <input type="radio" name="payment" value={option} checked={method === option} onChange={() => onChange(option)} />
-            <span className="payment-option__mark">{option.split(' ')[option.startsWith('Bank') ? 1 : 0].slice(0, 1)}</span>
+            <PaymentLogo name={option} />
             <span>{option}</span>{method === option && <strong aria-label="Terpilih">✓</strong>}
           </label>
         ))}
