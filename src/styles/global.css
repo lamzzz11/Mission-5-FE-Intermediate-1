@@ -3642,25 +3642,32 @@ ul {
   animation: payment-check-in .22s ease-out;
 }
 .payment-brand {
-  position: relative;
-  display: block;
+  display: inline-flex;
   flex: 0 0 28px;
   width: 28px;
   height: 28px;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
 .payment-brand img {
-  position: absolute;
-  top: 0;
-  left: 0;
   display: block;
-  max-width: none;
-  transform-origin: top left;
+  width: auto;
+  height: auto;
+  max-width: 28px;
+  max-height: 28px;
+  object-fit: contain;
 }
 .payment-brand--wordmark {
   flex: 0 0 auto;
+  width: auto;
   overflow: visible;
 }
+.payment-brand--wordmark img {
+  max-width: none;
+  max-height: 28px;
+}
+
 .payment-card-logos {
   display: flex;
   flex: 1;
@@ -3671,8 +3678,13 @@ ul {
   gap: 12px;
 }
 .virtual-account > .payment-brand--wordmark {
-  position: relative;
+  display: flex;
+  height: 42px;
+  justify-content: center;
   margin: 0 auto 8px;
+}
+.virtual-account > .payment-brand--wordmark img {
+  max-height: 42px;
 }
 .payment-result-art {
   animation: payment-art-enter .55s ease-out both;

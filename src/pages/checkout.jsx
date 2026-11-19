@@ -3,17 +3,18 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import logo from '../assets/logo.svg'
 import { courses } from '../data/courses.jsx'
 import { saveOrder } from '../data/orders.js'
-import bcaLogo from '../assets/images/payment-brands/bca.svg'
-import bniLogo from '../assets/images/payment-brands/bni.svg'
-import briLogo from '../assets/images/payment-brands/bri.svg'
-import mandiriLogo from '../assets/images/payment-brands/mandiri.svg'
-import danaLogo from '../assets/images/payment-brands/dana.svg'
-import ovoLogo from '../assets/images/payment-brands/ovo.svg'
-import linkajaLogo from '../assets/images/payment-brands/linkaja.svg'
-import shopeePayLogo from '../assets/images/payment-brands/shopee-pay.svg'
-import mastercardLogo from '../assets/images/payment-brands/mastercard.svg'
-import visaLogo from '../assets/images/payment-brands/visa.svg'
-import jcbLogo from '../assets/images/payment-brands/jcb.svg'
+import bcaLogo from '../assets/images/payment-brands/figma-bca.png'
+import bcaWordmark from '../assets/images/payment-brands/figma-bca-wordmark.png'
+import bniLogo from '../assets/images/payment-brands/figma-bni.png'
+import briLogo from '../assets/images/payment-brands/figma-bri.png'
+import mandiriLogo from '../assets/images/payment-brands/figma-mandiri.png'
+import danaLogo from '../assets/images/payment-brands/figma-dana.png'
+import ovoLogo from '../assets/images/payment-brands/figma-ovo.png'
+import linkajaLogo from '../assets/images/payment-brands/figma-linkaja.png'
+import shopeePayLogo from '../assets/images/payment-brands/figma-shopeepay.png'
+import mastercardLogo from '../assets/images/payment-brands/figma-mastercard.png'
+import visaLogo from '../assets/images/payment-brands/figma-visa.png'
+import jcbLogo from '../assets/images/payment-brands/figma-jcb.png'
 
 const SUBTOTAL = 767500
 const ADMIN_FEE = 7000
@@ -25,17 +26,17 @@ const methods = {
   'Kartu Kredit/Debit': [],
 }
 const paymentLogos = {
-  'Bank BCA': { image: bcaLogo, key: 'bca', width: 80, height: 26 },
-  'Bank BNI': { image: bniLogo, key: 'bni', width: 80, height: 24 },
-  'Bank BRI': { image: briLogo, key: 'bri', width: 80, height: 41 },
-  'Bank Mandiri': { image: mandiriLogo, key: 'mandiri', width: 80, height: 25 },
-  Dana: { image: danaLogo, key: 'dana', width: 80, height: 23 },
-  OVO: { image: ovoLogo, key: 'ovo', width: 64, height: 65 },
-  LinkAja: { image: linkajaLogo, key: 'linkaja', width: 68, height: 60 },
-  'Shopee Pay': { image: shopeePayLogo, key: 'shopee-pay', width: 80, height: 36 },
-  Mastercard: { image: mastercardLogo, key: 'mastercard', width: 80, height: 50 },
-  VISA: { image: visaLogo, key: 'visa', width: 80, height: 26 },
-  JCB: { image: jcbLogo, key: 'jcb', width: 80, height: 62 },
+  'Bank BCA': { image: bcaLogo, wordmark: bcaWordmark, key: 'bca' },
+  'Bank BNI': { image: bniLogo, key: 'bni' },
+  'Bank BRI': { image: briLogo, key: 'bri' },
+  'Bank Mandiri': { image: mandiriLogo, key: 'mandiri' },
+  Dana: { image: danaLogo, key: 'dana' },
+  OVO: { image: ovoLogo, key: 'ovo' },
+  LinkAja: { image: linkajaLogo, key: 'linkaja' },
+  'Shopee Pay': { image: shopeePayLogo, key: 'shopee-pay' },
+  Mastercard: { image: mastercardLogo, key: 'mastercard' },
+  VISA: { image: visaLogo, key: 'visa' },
+  JCB: { image: jcbLogo, key: 'jcb' },
 }
 const rupiah = (value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value)
 
@@ -86,12 +87,10 @@ function OrderSummary({ onSubmit, submitLabel, onSecondary, secondaryLabel, embe
 function PaymentLogo({ name, display = 'symbol' }) {
   const brand = paymentLogos[name]
   if (!brand) return null
-  const scale = (display === 'wordmark' ? 34 : 24) / brand.height
-  const width = brand.width * scale
-  const height = brand.height * scale
+  const image = display === 'wordmark' && brand.wordmark ? brand.wordmark : brand.image
   return (
-    <span className={'payment-brand payment-brand--' + brand.key + (display === 'wordmark' ? ' payment-brand--wordmark' : '')} aria-hidden="true" style={display === 'wordmark' ? { width, height, flexBasis: width } : undefined}>
-      <img src={brand.image} alt="" style={{ transform: 'scale(' + scale + ')' }} />
+    <span className={'payment-brand payment-brand--' + brand.key + (display === 'wordmark' ? ' payment-brand--wordmark' : '')} aria-hidden="true">
+      <img src={image} alt="" />
     </span>
   )
 }
