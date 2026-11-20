@@ -2442,7 +2442,7 @@ ul {
   gap: 16px;
   min-width: 0;
 }
-.learning-footer a span:first-child:not(:last-child) {
+.learning-footer a span[aria-hidden="true"] {
   font-size: 28px;
 }
 .learning-player .learning-video {
