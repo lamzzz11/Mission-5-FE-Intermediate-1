@@ -1346,23 +1346,29 @@ ul {
 }
 
 .payment-help {
-  padding: 12px 0;
-  border-top: 1px solid var(--color-border-light);
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
 }
 
 .payment-help summary {
   cursor: pointer;
   font-weight: 700;
+  list-style: none;
 }
 
-.payment-help__selected {
-  margin: 12px 0;
+.payment-help summary::-webkit-details-marker {
+  display: none;
 }
 
-.payment-help__notice {
-  margin-top: 16px;
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
+.payment-help summary::after {
+  content: '⌄';
+  float: right;
+}
+
+.payment-help[open] summary::after {
+  content: '⌃';
 }
 
 .payment-help ol {

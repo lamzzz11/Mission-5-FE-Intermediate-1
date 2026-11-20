@@ -20,31 +20,54 @@ const SUBTOTAL = 767500
 const ADMIN_FEE = 7000
 const TOTAL = SUBTOTAL + ADMIN_FEE
 const PRODUCT_TITLE = 'Gapai Karier Impianmu sebagai Seorang UI/UX Designer & Product Manager.'
-const getPaymentInstructions = (group, method) => {
-  if (group === 'Transfer Bank') {
-    const bank = method.startsWith('Bank ') ? method.slice(5) : 'yang kamu pilih'
-    return [
-      `Buka aplikasi mobile banking atau ATM ${bank}.`,
-      `Pilih menu transfer Virtual Account ${bank}.`,
-      'Masukkan nomor Virtual Account yang ditampilkan di atas.',
-      `Pastikan nama penerima dan total ${rupiah(TOTAL)} sesuai sebelum konfirmasi.`,
-    ]
-  }
-  if (group === 'E-Wallet') {
-    const wallet = methods['E-Wallet'].includes(method) ? method : 'e-wallet yang kamu pilih'
-    return [
-      `Buka aplikasi ${wallet}.`,
-      'Pilih pembayaran untuk merchant atau kode bayar yang diberikan saat checkout.',
-      `Pastikan total pembayaran ${rupiah(TOTAL)} sesuai sebelum menyetujui.`,
-      'Ikuti konfirmasi yang muncul di aplikasi e-wallet.',
-    ]
-  }
-  return [
-    'Siapkan kartu Mastercard, Visa, atau JCB.',
-    'Masukkan data kartu hanya pada halaman pembayaran resmi yang aman.',
-    `Periksa total pembayaran ${rupiah(TOTAL)} sebelum melanjutkan.`,
-    'Selesaikan verifikasi dari bank jika diminta.',
+const paymentInstructionSections = (method) => {
+  if (method === 'Bank BCA') return [
+    { title: 'ATM BCA', steps: [
+      'Masukkan kartu ATM dan PIN BCA Anda.',
+      'Di menu utama, pilih “Transaksi Lainnya”, lalu “Transfer” dan “Ke BCA Virtual Account”.',
+      'Masukkan nomor Virtual Account.',
+      'Pastikan data Virtual Account benar. Masukkan jumlah pembayaran, kemudian pilih “Benar”.',
+      'Periksa konfirmasi pembayaran di layar ATM. Pilih “Ya” jika benar atau “Tidak” jika masih salah.',
+      'Transaksi selesai. Pilih “Tidak” untuk tidak melanjutkan transaksi lain.',
+    ] },
+    { title: 'Mobile Banking BCA', steps: [
+      'Buka aplikasi BCA mobile.',
+      'Pilih “m-BCA”, kemudian pilih “m-Transfer”.',
+      'Pilih “BCA Virtual Account”.',
+      'Masukkan nomor Virtual Account, lalu pilih “OK”.',
+      'Klik tombol “Send” di sudut kanan atas aplikasi untuk melakukan transfer.',
+      'Klik “OK” untuk melanjutkan pembayaran.',
+      'Masukkan PIN untuk mengotorisasi transaksi.',
+      'Transaksi selesai.',
+    ] },
+    { title: 'Internet Banking BCA', steps: [
+      'Login ke KlikBCA Individual.',
+      'Pilih “Transfer”, kemudian “Transfer ke BCA Virtual Account”.',
+      'Masukkan nomor Virtual Account.',
+      'Pilih “Lanjutkan” untuk melanjutkan pembayaran.',
+      'Masukkan “RESPON KEYBCA APPLI 1” yang muncul pada Token BCA, lalu klik “Kirim”.',
+      'Pembayaran selesai.',
+    ] },
   ]
+
+  const bank = method.startsWith('Bank ') ? method.slice(5) : null
+  if (bank) return [{ title: `Virtual Account ${bank}`, steps: [
+    `Buka aplikasi atau ATM ${bank}, lalu pilih menu transfer Virtual Account.`,
+    'Masukkan nomor Virtual Account yang ditampilkan di halaman ini.',
+    `Pastikan nama penerima dan total ${rupiah(TOTAL)} sesuai sebelum konfirmasi.`,
+  ] }]
+
+  if (methods['E-Wallet'].includes(method)) return [{ title: method, steps: [
+    `Buka aplikasi ${method} dan pilih pembayaran untuk merchant.`,
+    `Periksa nama merchant serta total ${rupiah(TOTAL)}.`,
+    'Ikuti konfirmasi yang muncul di aplikasi.',
+  ] }]
+
+  return [{ title: 'Kartu Kredit/Debit', steps: [
+    'Siapkan kartu Mastercard, Visa, atau JCB.',
+    `Periksa total ${rupiah(TOTAL)} sebelum melanjutkan.`,
+    'Selesaikan verifikasi dari bank jika diminta.',
+  ] }]
 }
 const methods = {
   'Transfer Bank': ['Bank BCA', 'Bank BNI', 'Bank BRI', 'Bank Mandiri'],
@@ -193,9 +216,7 @@ export default function Checkout() {
           </section>
           <section className="content-panel">
             <h2>Tata Cara Pembayaran</h2>
-            <p className="payment-help__selected">Metode dipilih: <strong>{method}</strong></p>
-            {Object.keys(methods).map((group) => <details className="payment-help" key={group}><summary>{group}</summary><ol>{getPaymentInstructions(group, method).map((step) => <li key={step}>{step}</li>)}</ol></details>)}
-            <p className="payment-help__notice">Pembayaran di halaman ini masih simulasi. Nomor Virtual Account dan langkah di atas bukan transaksi sungguhan.</p>
+            {paymentInstructionSections(method).map(({ title, steps }) => <details className="payment-help" key={title} open><summary>{title}</summary><ol>{steps.map((step) => <li key={step}>{step}</li>)}</ol></details>)}
           </section>
         </> : isChanging ? <>
           <section className="content-panel">
