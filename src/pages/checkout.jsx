@@ -50,23 +50,93 @@ const paymentInstructionSections = (method) => {
     ] },
   ]
 
-  const bank = method.startsWith('Bank ') ? method.slice(5) : null
-  if (bank) return [{ title: `Virtual Account ${bank}`, steps: [
-    `Buka aplikasi atau ATM ${bank}, lalu pilih menu transfer Virtual Account.`,
-    'Masukkan nomor Virtual Account yang ditampilkan di halaman ini.',
-    `Pastikan nama penerima dan total ${rupiah(TOTAL)} sesuai sebelum konfirmasi.`,
+  if (method === 'Bank BNI') return [
+    { title: 'ATM BNI', steps: [
+      'Masukkan kartu ATM BNI dan PIN.',
+      'Pilih “Transfer”, lalu “Transfer Virtual Account”.',
+      'Masukkan nomor Virtual Account dari halaman pesanan.',
+      `Periksa nama penerima dan total ${rupiah(TOTAL)}, lalu konfirmasi pembayaran.`,
+    ] },
+    { title: 'wondr by BNI', steps: [
+      'Login ke aplikasi wondr by BNI.',
+      'Pilih “Virtual Account”, lalu “Tujuan Baru”.',
+      'Masukkan nomor Virtual Account dari halaman pesanan.',
+      `Periksa tagihan ${rupiah(TOTAL)} pada layar konfirmasi.`,
+      'Pilih sumber dana dan masukkan Password Transaksi untuk menyelesaikan pembayaran.',
+    ] },
+  ]
+
+  if (method === 'Bank BRI') return [
+    { title: 'ATM BRI', steps: [
+      'Masukkan kartu ATM BRI dan PIN.',
+      'Pilih “Transaksi Lain” > “Pembayaran” > “Lainnya” > “BRIVA”.',
+      'Masukkan nomor BRIVA dari halaman pesanan.',
+      `Periksa nama merchant dan total ${rupiah(TOTAL)}, lalu konfirmasi transaksi.`,
+      'Simpan bukti pembayaran.',
+    ] },
+    { title: 'BRImo', steps: [
+      'Login ke aplikasi BRImo.',
+      'Pilih “Tagihan” > “BRIVA”.',
+      'Masukkan nomor BRIVA dari halaman pesanan.',
+      `Periksa detail dan total ${rupiah(TOTAL)}, lalu konfirmasi dengan PIN BRImo.`,
+      'Simpan notifikasi transaksi berhasil.',
+    ] },
+  ]
+
+  if (method === 'Bank Mandiri') return [
+    { title: 'ATM Mandiri', steps: [
+      'Masukkan kartu debit Mandiri dan PIN.',
+      'Pilih “Bayar/Beli” > “Lainnya”.',
+      'Masukkan kode biller dan nomor Virtual Account yang diberikan pada halaman pembayaran.',
+      `Periksa detail dan total ${rupiah(TOTAL)}, lalu pilih “Ya” untuk membayar.`,
+      'Simpan bukti transaksi.',
+    ] },
+    { title: 'Livin’ by Mandiri', steps: [
+      'Login ke aplikasi Livin’ by Mandiri.',
+      'Pilih “Bayar/VA”, lalu masukkan nomor Virtual Account pada kolom pencarian.',
+      'Pilih penyedia jasa yang sesuai dengan nomor Virtual Account.',
+      `Periksa detail dan total ${rupiah(TOTAL)}, lalu pilih “Lanjutkan” dan konfirmasi pembayaran.`,
+      'Masukkan PIN Livin’ jika diminta, lalu cek status transaksi.',
+    ] },
+  ]
+
+  if (method === 'Dana') return [{ title: 'DANA', steps: [
+    'Pilih DANA pada halaman checkout dan lanjutkan ke aplikasi atau halaman pembayaran DANA.',
+    'Login dengan nomor yang terdaftar jika diminta.',
+    `Periksa nama merchant dan total ${rupiah(TOTAL)}.`,
+    'Pilih Saldo DANA sebagai sumber dana, lalu tekan “Bayar”.',
+    'Masukkan PIN atau selesaikan verifikasi di aplikasi DANA jika diminta, lalu kembali untuk melihat status pesanan.',
   ] }]
 
-  if (methods['E-Wallet'].includes(method)) return [{ title: method, steps: [
-    `Buka aplikasi ${method} dan pilih pembayaran untuk merchant.`,
-    `Periksa nama merchant serta total ${rupiah(TOTAL)}.`,
-    'Ikuti konfirmasi yang muncul di aplikasi.',
+  if (method === 'OVO') return [{ title: 'OVO', steps: [
+    'Pilih OVO saat checkout dan masukkan nomor ponsel yang terdaftar di OVO pada halaman pembayaran.',
+    'Buka aplikasi OVO dan pilih notifikasi pembayaran yang masuk.',
+    `Periksa nama merchant, total ${rupiah(TOTAL)}, dan sumber dana.`,
+    'Konfirmasi pembayaran dengan Security Code di aplikasi OVO.',
+    'Kembali ke halaman merchant untuk melihat status transaksi.',
+  ] }]
+
+  if (method === 'LinkAja') return [{ title: 'LinkAja', steps: [
+    'Pilih LinkAja saat checkout dan lanjutkan pembayaran.',
+    'Saat diarahkan ke aplikasi LinkAja, login dengan nomor ponsel dan PIN jika diminta.',
+    `Periksa detail transaksi dan total ${rupiah(TOTAL)}.`,
+    'Konfirmasi pembayaran di aplikasi LinkAja dan lakukan verifikasi yang diminta.',
+    'Tunggu notifikasi berhasil, lalu kembali ke halaman merchant untuk memeriksa status pesanan.',
+  ] }]
+
+  if (method === 'Shopee Pay') return [{ title: 'ShopeePay', steps: [
+    'Pilih ShopeePay saat checkout dan lanjutkan ke halaman pembayaran.',
+    'Jika halaman menampilkan QRIS, buka aplikasi Shopee atau ShopeePay, pilih Scan QR/Barcode, lalu scan kode yang tampil.',
+    `Periksa nama merchant dan total ${rupiah(TOTAL)} pada aplikasi.`,
+    'Pilih metode sumber dana yang tersedia, lalu konfirmasi dengan PIN ShopeePay.',
+    'Kembali ke halaman merchant dan periksa status pesanan.',
   ] }]
 
   return [{ title: 'Kartu Kredit/Debit', steps: [
-    'Siapkan kartu Mastercard, Visa, atau JCB.',
-    `Periksa total ${rupiah(TOTAL)} sebelum melanjutkan.`,
-    'Selesaikan verifikasi dari bank jika diminta.',
+    'Pilih kartu Mastercard, Visa, atau JCB pada halaman pembayaran.',
+    'Lanjutkan ke halaman payment gateway resmi dan isi detail kartu di sana.',
+    `Periksa nama merchant dan total ${rupiah(TOTAL)} sebelum menyetujui transaksi.`,
+    'Selesaikan verifikasi dari bank penerbit jika diminta, lalu kembali untuk melihat status pembayaran.',
   ] }]
 }
 const methods = {
@@ -210,7 +280,9 @@ export default function Checkout() {
                 ? <span className="payment-card-logos"><PaymentLogo name="Mastercard" display="wordmark" /><PaymentLogo name="VISA" display="wordmark" /><PaymentLogo name="JCB" display="wordmark" /></span>
                 : <PaymentLogo name={method} display="wordmark" />}
               <p>{method.startsWith('Bank ') ? 'Bayar Melalui Virtual Account ' + method.slice(5) : 'Bayar Melalui ' + method}</p>
-              {method.startsWith('Bank ') && <div className="virtual-account__number">11739 081234567890 <button type="button" onClick={copyAccount}>{copied ? 'Tersalin' : 'Salin'}</button></div>}
+              {method.startsWith('Bank ') && (method === 'Bank BCA'
+                ? <div className="virtual-account__number">11739 081234567890 <button type="button" onClick={copyAccount}>{copied ? 'Tersalin' : 'Salin'}</button></div>
+                : <p>Nomor Virtual Account {method.slice(5)} akan diberikan oleh penyedia pembayaran.</p>)}
             </div>
             <OrderSummary embedded submitLabel="Bayar Sekarang" onSubmit={() => finishPayment()} secondaryLabel="Ganti Metode Pembayaran" onSecondary={() => navigate('/checkout/' + course.id + '/change-method?method=' + encodeURIComponent(method))} />
           </section>
