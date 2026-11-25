@@ -52,9 +52,9 @@ export default function Products() {
       <div className="products-layout">
         <aside className="product-filters">
           <div className="product-filters__heading"><strong>Filter</strong><button type="button" onClick={reset}>Reset</button></div>
-          <fieldset className="product-filter-group"><legend>Bidang Studi</legend>{studyFilters.map(({ label, value }) => <label key={label}><input type="checkbox" checked={categories.includes(value)} onChange={() => toggle(value, categories, setCategories)} />{label}</label>)}</fieldset>
-          <fieldset className="product-filter-group"><legend>Harga</legend>{studyFilters.map(({ label, value }) => <label key={label}><input type="checkbox" checked={prices.includes(value)} onChange={() => toggle(value, prices, setPrices)} />{label}</label>)}</fieldset>
-          <fieldset className="product-filter-group"><legend>Durasi</legend>{durations.map(({ label, value }) => <label key={value}><input type="radio" name="duration" checked={duration === value} onChange={() => setDuration(value)} />{label}</label>)}</fieldset>
+          <details className="product-filter-group" open><summary>Bidang Studi</summary><div className="product-filter-options" role="group" aria-label="Bidang Studi">{studyFilters.map(({ label, value }) => <label key={label}><input type="checkbox" checked={categories.includes(value)} onChange={() => toggle(value, categories, setCategories)} />{label}</label>)}</div></details>
+          <details className="product-filter-group" open><summary>Harga</summary><div className="product-filter-options" role="group" aria-label="Harga">{studyFilters.map(({ label, value }) => <label key={label}><input type="checkbox" checked={prices.includes(value)} onChange={() => toggle(value, prices, setPrices)} />{label}</label>)}</div></details>
+          <details className="product-filter-group" open><summary>Durasi</summary><div className="product-filter-options" role="radiogroup" aria-label="Durasi">{durations.map(({ label, value }) => <label key={value}><input type="radio" name="duration" checked={duration === value} onChange={() => setDuration(value)} />{label}</label>)}</div></details>
         </aside>
         <div className="products-main">
           <div className="products-toolbar__controls">
