@@ -65,9 +65,9 @@ export default function Navbar({ showMenu = true, logoTo = '/home' }) {
               </button>
             ) : (
               <>
-                <a href="#kategori" className="navbar__link">
+                <Link to="/courses" className="navbar__link">
                   Kategori
-                </a>
+                </Link>
                 <button
                   type="button"
                   className="navbar__avatar"
@@ -84,9 +84,9 @@ export default function Navbar({ showMenu = true, logoTo = '/home' }) {
               <ul className={`navbar__dropdown${isMobile ? ' navbar__dropdown--mobile' : ''}`}>
                 {isMobile && (
                   <li>
-                    <a href="#kategori" className="navbar__dropdown-item" onClick={closeMenu}>
+                    <Link to="/courses" className="navbar__dropdown-item" onClick={closeMenu}>
                       Kategori
-                    </a>
+                    </Link>
                   </li>
                 )}
                 {ACCOUNT_MENU.map(({ label, to }) => (
